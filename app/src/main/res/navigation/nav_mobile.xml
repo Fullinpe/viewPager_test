@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_mobile"
+    app:startDestination="@id/m1Fragment">
+
+
+    <fragment
+        android:id="@+id/m1Fragment"
+        android:name="com.example.viewpager_test.frag1.m1Fragment"
+        android:label="m1_fragment"
+        tools:layout="@layout/m1_fragment" />
+    <fragment
+        android:id="@+id/m2Fragment"
+        android:name="com.example.viewpager_test.frag2.m2Fragment"
+        android:label="m2_fragment"
+        tools:layout="@layout/m2_fragment" />
+    <fragment
+        android:id="@+id/m3Fragment"
+        android:name="com.example.viewpager_test.frag3.m3Fragment"
+        android:label="m3_fragment"
+        tools:layout="@layout/m3_fragment" />
+    <fragment
+        android:id="@+id/m4Fragment"
+        android:name="com.example.viewpager_test.frag4.m4Fragment"
+        android:label="m4_fragment"
+        tools:layout="@layout/m4_fragment" />
+</navigation>

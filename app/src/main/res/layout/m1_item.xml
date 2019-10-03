@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
+
+    <TextView
+        android:id="@+id/major_m1_i"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxEms="6"
+        android:maxLines="1"
+        android:text="1"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/name_m1_i"
+        app:layout_constraintStart_toStartOf="@+id/name_m1_i"
+        app:layout_constraintTop_toBottomOf="@+id/name_m1_i" />
+
+    <TextView
+        android:id="@+id/name_m1_i"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="28dp"
+        android:gravity="center"
+        android:maxEms="3"
+        android:maxLines="1"
+        android:text="Jack Ma"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/job_m1_i"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.499" />
+
+    <TextView
+        android:id="@+id/job_m1_i"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:maxEms="1"
+        android:text="负责人"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/m1_i_task"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="4dp"
+        android:maxLines="4"
+        android:text="完成云\n台的初步设计完成云台的初步设计完成云台的初步设计完成云台的初步设计完成云台的初\n步设计完成云台的初步设计"
+        android:textColor="@color/colorAccent"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/major_m1_i"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/name_m1_i"
+        app:layout_constraintTop_toTopOf="@+id/name_m1_i" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="本期任务："
+        android:textColor="@color/colorPrimary"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/m1_i_task"
+        app:layout_constraintEnd_toStartOf="@+id/m1_i_task"
+        app:layout_constraintTop_toTopOf="@+id/m1_i_task" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

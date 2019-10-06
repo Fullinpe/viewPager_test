@@ -173,7 +173,9 @@ public class FunGameRefreshView extends LinearLayout implements View.OnTouchList
                 }
 
                 // 通过偏移下拉头的topMargin值，来实现下拉效果
-                setHeaderTopMarign((int) (offsetY + hideHeaderHeight));
+                //TODO
+                if((offsetY + hideHeaderHeight)>50)
+                    setHeaderTopMarign((int) (offsetY + hideHeaderHeight));
 
                 break;
             case MotionEvent.ACTION_UP:

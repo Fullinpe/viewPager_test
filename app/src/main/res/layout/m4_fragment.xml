@@ -1,31 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".frag4.m4Fragment">
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="166dp"
-        android:layout_marginTop="339dp"
-        android:text="Button4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/button2"
-        app:layout_constraintStart_toStartOf="@+id/button2"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/msg_m4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/s_id_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:text="   "
+                    android:textColor="#013C83"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name_m4" />
+
+                <TextView
+                    android:id="@+id/msg_me_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="550dp"
+                    android:text="我的信息"
+                    android:textColor="#2196F3"
+                    android:textSize="36sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="学号："
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/s_id_m4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/s_id_m4" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="专业："
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView11"
+                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="担任角色："
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView12"
+                    app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="历史操作："
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView13"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+                <TextView
+                    android:id="@+id/major_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="    "
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView12"
+                    app:layout_constraintEnd_toEndOf="@+id/s_id_m4"
+                    app:layout_constraintStart_toStartOf="@+id/s_id_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+                <TextView
+                    android:id="@+id/mgr_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   "
+                    android:textColor="#673AB7"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView13"
+                    app:layout_constraintEnd_toEndOf="@+id/major_m4"
+                    app:layout_constraintStart_toStartOf="@+id/major_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+                <Button
+                    android:id="@+id/his_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击查看"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView15"
+                    app:layout_constraintEnd_toEndOf="@+id/mgr_m4"
+                    app:layout_constraintStart_toStartOf="@+id/mgr_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView15" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    android:text="姓名："
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView11"
+                    app:layout_constraintTop_toBottomOf="@+id/msg_me_m4" />
+
+                <TextView
+                    android:id="@+id/name_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   "
+                    android:textColor="#013C82"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                    app:layout_constraintEnd_toEndOf="@+id/s_id_m4"
+                    app:layout_constraintStart_toStartOf="@+id/s_id_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView2" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="QQ："
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView12"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                <TextView
+                    android:id="@+id/QQ_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   "
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                    app:layout_constraintEnd_toEndOf="@+id/major_m4"
+                    app:layout_constraintStart_toStartOf="@+id/major_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView18" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="电话："
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView18"
+                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+                <TextView
+                    android:id="@+id/TEL_m4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   "
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView20"
+                    app:layout_constraintEnd_toEndOf="@+id/QQ_m4"
+                    app:layout_constraintStart_toStartOf="@+id/QQ_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView20" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>

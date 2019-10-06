@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#D7BEF3"
+        android:gravity="center"
+        android:text="以下是你的历史操作"
+        android:textSize="24sp" />
+
+    <ListView
+        android:id="@+id/his_list_dia"
+        android:layout_width="match_parent"
+        android:layout_height="600dp" />
+</LinearLayout>

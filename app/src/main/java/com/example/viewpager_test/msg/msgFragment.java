@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.viewpager_test.R;
+import com.example.viewpager_test.SlideRecycler;
 
 public class msgFragment extends Fragment {
 
     private MsgViewModel mViewModel;
+    public SlideRecycler slideRecycler;
 
     public static msgFragment newInstance() {
         return new msgFragment();
@@ -23,7 +25,10 @@ public class msgFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.msg_fragment, container, false);
+        View view=inflater.inflate(R.layout.msg_fragment, container, false);
+        slideRecycler=view.findViewById(R.id.slideR);
+        slideRecycler.setTopview(40-20);
+        return view;
     }
 
     @Override
@@ -33,4 +38,10 @@ public class msgFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+    }
 }

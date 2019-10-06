@@ -6,16 +6,19 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.example.viewpager_test.R;
+import com.example.viewpager_test.SlideRecycler;
 import com.hitomi.refresh.view.FunGameRefreshView;
+
+import java.util.Objects;
 
 public class m1Fragment extends Fragment {
 
@@ -23,7 +26,7 @@ public class m1Fragment extends Fragment {
     Handler handler=new Handler();
     private String[][] strings;
     public TextView count_m1;
-    public ListView listView;
+    public SlideRecycler slideRecycler;
 
     public static m1Fragment newInstance() {
         return new m1Fragment();
@@ -46,7 +49,8 @@ public class m1Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         count_m1=view.findViewById(R.id.count_m1);
-        listView=view.findViewById(R.id.member_m1);
+        slideRecycler =view.findViewById(R.id.member_m1);
+        slideRecycler.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),DividerItemDecoration.VERTICAL));
 //        final List<Map<String,Object>> list=new ArrayList<>();
 
         FunGameRefreshView refreshView = view.findViewById(R.id.refresh_hit_block);
@@ -61,7 +65,7 @@ public class m1Fragment extends Fragment {
             public void onRefreshComplete() {
             }
         });
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        slideRecycler.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                if(!MainActivity.MGR.equals("0")){
@@ -77,7 +81,7 @@ public class m1Fragment extends Fragment {
 //                }
 //            }
 //        });
-//                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                slideRecycler.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //                    @Override
 //                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                        if(!MainActivity.MGR.equals("0")){
@@ -118,7 +122,7 @@ public class m1Fragment extends Fragment {
 //                            count_m1.setText("当前人数："+list.size());
 //                            adapter.setList(list);
 //                            count_m1.setText("当前人数："+list.size());
-//                            listView.setAdapter(adapter);
+//                            slideRecycler.setAdapter(adapter);
 //                        }
 //                    });
 //                }

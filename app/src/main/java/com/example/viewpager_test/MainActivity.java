@@ -1,78 +1,401 @@
 package com.example.viewpager_test;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.core.app.ActivityCompat;
 
 import com.example.viewpager_test.frag1.m1Fragment;
 import com.example.viewpager_test.frag1.m1_Adapter;
+import com.example.viewpager_test.frag2.m2Fragment;
 import com.example.viewpager_test.mainf.mainFragment;
-import com.example.viewpager_test.msg.msgFragment;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Handler handler=new Handler();
+    private Handler handler = new Handler();
+    private boolean check_update = true;
+    private boolean exit_out = true;
+
+    int down_percent = 0;
+    private boolean mIsCancel = false;
+    private ProgressBar progressBar;
+    private Dialog dialog;
+    private File apkFile;
+    public static MainActivity mainActivity;
+
+    @SuppressLint("HandlerLeak")
+    Handler handler_log = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    progressBar.setProgress(down_percent);
+                    break;
+                case 2:
+                    dialog.dismiss();
+                    Globals.installAPK(MainActivity.this);
+            }
+        }
+    };
+    private boolean bool1, bool2, bool3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ViewPager viewPager=findViewById(R.id.viewpager);
-        final List<Fragment> fragmentList=new ArrayList<>();
-        fragmentList.add(new msgFragment());
-        fragmentList.add(new mainFragment());
+        mainActivity=this;
+        final PackageManager pm = getPackageManager();
 
-        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                Manifest.permission.CALL_PHONE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+        }, 0x11);
+
+
+        Globals.sign_in = false;
+
+        Globals.device_mac = Globals.getLocalMac();
+
+        final mainFragment mf = new mainFragment();
+
+
+        dialog = new Dialog(MainActivity.this);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar.setMax(100);
+//                progressBar.setProgress(0);
+        dialog.setContentView(progressBar);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public Fragment getItem(int position) {
-                return fragmentList.get(position);
+            public void onDismiss(DialogInterface dialogInterface) {
+                mIsCancel = true;
             }
-
-            @Override
-            public int getCount() {
-                return fragmentList.size();
-            }
-
         });
-        viewPager.setCurrentItem(1);
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String[][] temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>1 ORDER BY  members.MGR DESC",
-                        "S_ID", "NAME", "MGR","MAJOR","QQ","TEL");
-                Globals.list=new ArrayList<>();
-                if(temp!=null) {
-                    Map<String, Object> map = new HashMap<>();
-                    for (int i = 0; i < temp.length; i++) {
-                        if (i > 0)
-                            map = new HashMap<>();
-                        map.put("sid", temp[i][0]);
-                        map.put("name", temp[i][1]);
-                        map.put("mgr", temp[i][2]);
-                        map.put("major", temp[i][3]);
-                        map.put("qq", temp[i][4]);
-                        map.put("tel", temp[i][5]);
-                        Globals.list.add(map);
+                while (!(bool1 && bool2 && bool3)) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    handler.post(new Runnable() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void run() {
-                            ((m1Fragment)((mainFragment)fragmentList.get(1)).fragments[0]).count_m1.setText("当前人数："+Globals.list.size());
-                            m1_Adapter m1_adapter=new m1_Adapter(MainActivity.this,Globals.list);
-                            ((m1Fragment)((mainFragment)fragmentList.get(1)).fragments[0]).listView.setAdapter(m1_adapter);
+                    bool1 = (PackageManager.PERMISSION_GRANTED ==
+                            pm.checkPermission("android.permission.READ_EXTERNAL_STORAGE", "com.example.viewpager_test"));
+                    bool2 = (PackageManager.PERMISSION_GRANTED ==
+                            pm.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", "com.example.viewpager_test"));
+                    bool3 = (PackageManager.PERMISSION_GRANTED ==
+                            pm.checkPermission("android.permission.CALL_PHONE", "com.example.viewpager_test"));
+                }
+
+                String[][] temp;
+                temp = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version", "version_id");
+                InputStream[] is;
+                if (temp != null) {
+                    Globals.onlineversion_id = temp[0][0];
+                    if (!Globals.onlineversion_id.equals(Globals.version_id)) {
+                        int version_len =
+                                Integer.parseInt(DBUtils.select_DB("SELECT OCTET_LENGTH(version_blob) datesize from version " +
+                                        "WHERE version_id=(SELECT MAX(version_id) FROM version)", "datesize")[0][0]);
+
+                        File dir = new File(Globals.mSavePath);
+                        if (!dir.exists()) {
+                            if (dir.mkdir())
+                                Log.e("LogActivity", "成功创建文件夹");
+                            else
+                                Log.e("LogActivity", "创建文件夹失败");
+                        } else
+                            Log.e("LogActivity", "文件夹已存在");
+
+                        is = DBUtils.selectBLOB("SELECT * from version WHERE version_id=" + temp[0][0], "version_blob");
+
+                        try {
+                            apkFile = new File(Globals.mSavePath, Globals.mVersion_name);
+                            FileOutputStream fos = new FileOutputStream(apkFile);
+                            int count = 0;
+                            byte[] buffer = new byte[1024];
+                            while (!mIsCancel) {
+                                int numread = is[0].read(buffer);
+                                count += numread;
+                                // 计算进度条的当前位置
+                                down_percent = (int) (((float) count / version_len) * 100);
+                                // 更新进度条
+                                handler_log.sendEmptyMessage(1);
+
+                                // 下载完成
+                                if (numread < 0) {
+                                    handler_log.sendEmptyMessage(2);
+                                    Log.e("LogActivity", "apk_len:" + version_len);
+                                    break;
+                                }
+                                fos.write(buffer, 0, numread);
+                            }
+                            fos.close();
+                            is[0].close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    });
+                    } else if (Globals.S_ID.equals("")) {
+                        dialog.dismiss();
+                        String[][] trash_query;
+                        trash_query = DBUtils.select_DB("SELECT x.OPER_device,x.S_ID,members.MGR FROM (SELECT OPER_device,S_ID FROM `logs` WHERE `KEY`=(SELECT MAX(`KEY`) FROM `logs` WHERE S_ID=(SELECT S_ID FROM `logs` WHERE `KEY`=(SELECT MAX(`KEY`) FROM `logs` WHERE OPER_device='"
+                                        + Globals.device_mac + "' AND TYPE_operation='登录账户')) AND TYPE_operation='登录账户')) AS x LEFT JOIN members ON members.S_ID=x.S_ID",
+                                "OPER_device", "S_ID", "MGR");
+                        if (trash_query != null && trash_query.length > 0) {
+                            if (trash_query[0][0] != null && trash_query[0][0].equals(Globals.device_mac)) {
+                                Globals.S_ID = trash_query[0][1];
+                                Globals.MGR = Integer.parseInt(trash_query[0][2]);
+                                getSupportFragmentManager().beginTransaction().add(R.id.main_ll, mf).commitAllowingStateLoss();
+                                Globals.sign_in = true;
+                            } else {
+                                Intent intent = new Intent();
+                                intent.setClass(MainActivity.this, LogActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            Intent intent = new Intent();
+                            intent.setClass(MainActivity.this, LogActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        dialog.dismiss();
+                        String[][] trash_query;
+                        trash_query = DBUtils.select_DB("SELECT MGR FROM members WHERE S_ID='" + Globals.S_ID + "'",
+                                "MGR");
+                        if (trash_query != null) {
+                            if (trash_query.length > 0) {
+                                Globals.MGR = Integer.parseInt(trash_query[0][0]);
+                                getSupportFragmentManager().beginTransaction().add(R.id.main_ll, mf).commitAllowingStateLoss();
+                                Globals.sign_in = true;
+                            } else {
+                                //TODO:S_ID问题
+                            }
+                        } else {
+                            //TODO:链路问题
+                        }
+                    }
+                    //TODO:更新后退回&&完成自动登录
+                    if (Globals.sign_in) {
+                        String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>1 ORDER BY  members.MGR DESC",
+                                "S_ID", "NAME", "MGR", "MAJOR", "QQ", "TEL", "TASK");
+                        Globals.list = new ArrayList<>();
+                        if (init_temp != null) {
+                            Map<String, Object> map = new HashMap<>();
+                            for (int i = 0; i < init_temp.length; i++) {
+                                if (i > 0)
+                                    map = new HashMap<>();
+                                map.put("sid", init_temp[i][0]);
+                                map.put("name", init_temp[i][1]);
+                                map.put("mgr", init_temp[i][2]);
+                                map.put("major", init_temp[i][3]);
+                                map.put("qq", init_temp[i][4]);
+                                map.put("tel", init_temp[i][5]);
+                                map.put("task", init_temp[i][6]);
+                                Globals.list.add(map);
+                            }
+                            handler.post(new Runnable() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void run() {
+                                    ((m1Fragment) (mf.fragments[0])).count_m1.setText("当前人数：" + Globals.list.size());
+                                    m1_Adapter m1_adapter = new m1_Adapter(MainActivity.this, Globals.list);
+                                    ((m1Fragment) (mf.fragments[0])).slideRecycler.setAdapter(m1_adapter);
+                                }
+                            });
+                        }
+                    }
+
+                } else {
+                    //当前网络链路错误
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("提示：")
+                            .setMessage("请确认网络链路正确")
+                            .setPositiveButton("确定", null)
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    finish();
+                                }
+                            });
+                    builder.show();
+                }
+            }
+        }).start();
+
+
+//        ViewPager viewPager=findViewById(R.id.viewpager);
+//        final List<Fragment> fragmentList=new ArrayList<>();
+//        fragmentList.add(new mainFragment());
+//        fragmentList.add(new msgFragment());
+//        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+//            @Override
+//            public Fragment getItem(int position) {
+//                return fragmentList.get(position);
+//            }
+//
+//            @Override
+//            public int getCount() {
+//                return fragmentList.size();
+//            }
+//
+//        });
+//
+//        viewPager.setCurrentItem(0);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!Globals.sign_in) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                boolean onetime = true, onetime2 = true;
+                while (check_update) {
+                    String[][] trash_query = null;
+                    try {
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (Globals.S_ID != null)
+                        trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version UNION ALL " +
+                                "SELECT OPER_device FROM `logs` WHERE `KEY`=(SELECT MAX(`KEY`) " +
+                                "OPER_device FROM `logs` WHERE S_ID='" + Globals.S_ID
+                                + "' AND TYPE_operation='登录账户') UNION ALL SELECT PRI FROM members WHERE S_ID='" + Globals.S_ID
+                                + "' UNION ALL SELECT PRI1 FROM members WHERE S_ID='" + Globals.S_ID
+                                + "'", "version_id");
+                    if (trash_query != null) {
+                        Globals.onlineversion_id = trash_query[0][0];
+                        if (!Globals.onlineversion_id.equals(Globals.version_id) && onetime) {
+                            onetime = false;
+                            handler.post(new Runnable() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                                    dialog.setTitle("更新");
+                                    dialog.setMessage("版本已更新，请退出后重新打开APP");
+                                    dialog.setNegativeButton("退出", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            finish();
+                                        }
+                                    });
+                                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        @Override
+                                        public void onCancel(DialogInterface dialogInterface) {
+                                            finish();
+                                        }
+                                    });
+                                    dialog.show();
+
+                                }
+                            });
+                        }
+
+                        //TODO:cha
+                        for (String[] strings : trash_query)
+                            Log.e("TG", "" + strings[0]);
+
+                        if (trash_query.length > 1 && !trash_query[1][0].equals(Globals.device_mac) && onetime2) {
+                            onetime2 = false;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                                    dialog.setTitle("注销");
+                                    dialog.setMessage("你的账号在别处登录");
+                                    dialog.setNegativeButton("注销", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            if (exit_out) {
+                                                exit_out = false;
+                                                finish();
+                                                startActivity(new Intent(MainActivity.this, LogActivity.class));
+                                            }
+                                            Globals.S_ID = "";
+                                            Globals.sign_in = false;
+                                            Globals.MGR = 0;
+                                            check_update = false;
+                                        }
+                                    });
+                                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        @Override
+                                        public void onCancel(DialogInterface dialogInterface) {
+                                            if (exit_out) {
+                                                exit_out = false;
+                                                finish();
+                                                startActivity(new Intent(MainActivity.this, LogActivity.class));
+                                            }
+                                            Globals.S_ID = "";
+                                            Globals.sign_in = false;
+                                            Globals.MGR = 0;
+                                            check_update = false;
+                                        }
+                                    });
+                                    dialog.show();
+                                }
+                            });
+                        }
+                        if (trash_query.length > 2) {
+                            final int temp = Integer.parseInt(trash_query[2][0]);
+                            handler.post(new Runnable() {
+                                @RequiresApi(api = Build.VERSION_CODES.P)
+                                @Override
+                                public void run() {
+                                    if(((m2Fragment) (mf.fragments[1])).progressBar!=null){
+                                        ((m2Fragment) (mf.fragments[1])).progressBar.setProgress(temp);
+//                                        if (temp >= getResources().getInteger(R.integer.beg_pro)) {
+//                                            ((m2Fragment) (mf.fragments[1])).raise_tv.setVisibility(View.VISIBLE);
+//                                        } else {
+//                                            ((m2Fragment) (mf.fragments[1])).raise_tv.setVisibility(View.INVISIBLE);
+//                                        }
+                                    }
+                                }
+                            });
+                        }
+                        if (trash_query.length > 3) {
+                            Globals.pri_able = Integer.parseInt(trash_query[3][0]) == 1;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if(((m2Fragment) (mf.fragments[1])).raise_tv != null)
+                                        ((m2Fragment) (mf.fragments[1])).raise_tv
+                                                .setVisibility(Globals.pri_able ? View.VISIBLE : View.INVISIBLE);
+                                }
+                            });
+                        }
+                    }
                 }
             }
         }).start();
@@ -81,16 +404,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Globals.maketoast(this,"destroy");
+        Globals.maketoast(this, "destroy");
 
         super.onDestroy();
-        finish();
+        check_update = false;
+//        finish();
     }
 
-    @SuppressLint("MissingSuperCall")
     @Override
     protected void onPause() {
-        this.onDestroy();
+        super.onPause();
+//        this.onDestroy();
     }
 
 

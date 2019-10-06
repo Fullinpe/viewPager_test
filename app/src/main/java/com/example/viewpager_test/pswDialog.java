@@ -3,6 +3,8 @@ package com.example.viewpager_test;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ public class pswDialog extends Dialog {
         private Handler handler = new Handler();
         private int error_s = 3;
         Context context;
+        private boolean exit_out=true;
 
         public Builder(Context context) {
             this.context = context;
@@ -58,6 +61,16 @@ public class pswDialog extends Dialog {
             return this;
         }
 
+        public Builder setonCancel(final Runnable cancel) {
+            pswdialog.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    cancel.run();
+                }
+            });
+            return this;
+        }
+
         public pswDialog create() {
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -82,12 +95,37 @@ public class pswDialog extends Dialog {
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                                builder.setTitle("提示：");
-                                                builder.setMessage("输入密码错误次数已达上限，即将退出登录");
-                                                builder.setPositiveButton("确定", null);
-                                                builder.show();
-                                                //todo
+                                                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                                                dialog.setTitle("注销");
+                                                dialog.setMessage("你的账号在别处登录");
+                                                dialog.setNegativeButton("注销", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        if (exit_out) {
+                                                            exit_out = false;
+                                                            MainActivity.mainActivity.finish();
+                                                            Globals.logs_thread_out(Globals.S_ID);
+                                                            context.startActivity(new Intent(context, LogActivity.class));
+                                                        }
+                                                        Globals.S_ID = "";
+                                                        Globals.sign_in = false;
+                                                        Globals.MGR = 0;
+                                                    }
+                                                });
+                                                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                                    @Override
+                                                    public void onCancel(DialogInterface dialogInterface) {
+                                                        if (exit_out) {
+                                                            exit_out = false;
+                                                            MainActivity.mainActivity.finish();
+                                                            context.startActivity(new Intent(context, LogActivity.class));
+                                                        }
+                                                        Globals.S_ID = "";
+                                                        Globals.sign_in = false;
+                                                        Globals.MGR = 0;
+                                                    }
+                                                });
+                                                dialog.show();
                                             }
                                         });
                                     }else {

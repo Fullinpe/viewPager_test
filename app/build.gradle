@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
-    implementation project(path: ':fungamerefresh')
     implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
+    implementation  'com.sackcentury:shinebutton:1.0.0'
 
 }

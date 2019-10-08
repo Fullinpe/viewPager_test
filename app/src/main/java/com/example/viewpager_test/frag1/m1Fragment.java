@@ -1,8 +1,8 @@
 package com.example.viewpager_test.frag1;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +11,32 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.viewpager_test.DBUtils;
+import com.example.viewpager_test.Globals;
 import com.example.viewpager_test.R;
 import com.example.viewpager_test.SlideRecycler;
-import com.hitomi.refresh.view.FunGameRefreshView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class m1Fragment extends Fragment {
 
-    private M1ViewModel mViewModel;
-    Handler handler=new Handler();
+    public M1ViewModel mViewModel;
+    Handler handler = new Handler();
     private String[][] strings;
     public TextView count_m1;
     public SlideRecycler slideRecycler;
+    private boolean for1 = true;
+    public m1_Adapter m1_adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static m1Fragment newInstance() {
         return new m1Fragment();
@@ -42,29 +52,71 @@ public class m1Fragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(M1ViewModel.class);
-        // TODO: Use the ViewModel
+        mViewModel.getOnline_data().observe(this, new Observer<List<Map<String, Object>>>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onChanged(List<Map<String, Object>> maps) {
+                count_m1.setText("当前人数：" + maps.size());
+                m1_adapter.list = maps;
+                m1_adapter.notifyItemRangeChanged(0,maps.size());
+                m1_adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        count_m1=view.findViewById(R.id.count_m1);
-        slideRecycler =view.findViewById(R.id.member_m1);
-        slideRecycler.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),DividerItemDecoration.VERTICAL));
-//        final List<Map<String,Object>> list=new ArrayList<>();
+        Globals.m1_hidden=false;
 
-        FunGameRefreshView refreshView = view.findViewById(R.id.refresh_hit_block);
-        refreshView.setOnRefreshListener(new FunGameRefreshView.FunGameRefreshListener() {
-            @Override
-            public void onPullRefreshing() {
-                // 模拟后台耗时任务
-                SystemClock.sleep(2000);
-            }
+        count_m1 = view.findViewById(R.id.count_m1);
+        slideRecycler = view.findViewById(R.id.member_m1);
+        slideRecycler.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), DividerItemDecoration.VERTICAL));
 
+//        FunGameRefreshView refreshView = view.findViewById(R.id.refresh_hit_block);
+        swipeRefreshLayout=view.findViewById(R.id.refresh_layout);
+        swipeRefreshLayout.setEnabled(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefreshComplete() {
+            public void onRefresh() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Globals.sign_in) {
+                            String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>0 ORDER BY  members.MGR DESC",
+                                    "S_ID", "NAME", "MGR", "MAJOR", "QQ", "TEL", "TASK");
+                            Globals.online_m1 = new ArrayList<>();
+                            if (init_temp != null) {
+                                Map<String, Object> map = new HashMap<>();
+                                for (int i = 0; i < init_temp.length; i++) {
+                                    if (i > 0)
+                                        map = new HashMap<>();
+                                    map.put("sid", init_temp[i][0]);
+                                    map.put("name", init_temp[i][1]);
+                                    map.put("mgr", init_temp[i][2]);
+                                    map.put("major", init_temp[i][3]);
+                                    map.put("qq", init_temp[i][4]);
+                                    map.put("tel", init_temp[i][5]);
+                                    map.put("task", init_temp[i][6]);
+                                    Globals.online_m1.add(map);
+                                }
+                                if (mViewModel.online_data != null)
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mViewModel.online_data.setValue(Globals.online_m1);
+                                        }
+                                    });
+                            }
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }).start();
             }
         });
+
+
+
 //        slideRecycler.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -93,7 +145,6 @@ public class m1Fragment extends Fragment {
 //                        return true;
 //                    }
 //                });
-
 
 
 //        new Thread(new Runnable() {
@@ -129,5 +180,11 @@ public class m1Fragment extends Fragment {
 //
 //            }
 //        }).start();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Globals.m1_hidden=hidden;
     }
 }

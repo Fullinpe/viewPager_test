@@ -19,16 +19,24 @@ import java.util.Map;
 
 public class Globals {
 
-    public static String S_ID = "";
     public static int MGR = 0;
-    public static boolean sign_in=false;
-    public static List<Map<String, Object>> list;
+    public static int current_frag=0;
+    public static String S_ID = "";
     public static String onlineversion_id="";
     public static String version_id="3";
     public static String device_mac="";
-    public static boolean pri_able=false;
     public static String mSavePath = Environment.getExternalStorageDirectory() + "/" + "LOTogether";
     public static String mVersion_name = "temp.apk";
+    public static List<Map<String, Object>> list;
+    public static List<Map<String, Object>> online_m1;
+    public static List<Map<String, Object>> online_m2;
+    public static List<Map<String, Object>> online_m3;
+    public static boolean sign_in=false;
+    public static boolean pri_able=false;
+    public static boolean m1_hidden=true;
+    public static boolean m2_hidden=true;
+    public static boolean m3_hidden=true;
+    public static boolean m4_hidden=true;
 
     public static void maketoast(Context context, String msg) {
         Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);

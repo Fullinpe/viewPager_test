@@ -13,6 +13,12 @@
         tools:ignore="UselessParent">
 
 
+        <!--        <com.hitomi.refresh.view.FunGameRefreshView-->
+<!--            android:id="@+id/refresh_hit_block"-->
+<!--            app:game_type="battle_city"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,11 +51,31 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.8" />
 
+            <TextView
+                android:id="@+id/m1_members"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="正式队员：0"
+                android:textColor="#00897B"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/m1_newers"
+                app:layout_constraintTop_toTopOf="@+id/count_m1" />
+
+            <TextView
+                android:id="@+id/m1_newers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="新人：0"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/count_m1"
+                app:layout_constraintTop_toTopOf="@+id/m1_members" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.hitomi.refresh.view.FunGameRefreshView
-            android:id="@+id/refresh_hit_block"
-            app:game_type="battle_city"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -59,6 +85,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:ignore="NestedScrolling" />
-        </com.hitomi.refresh.view.FunGameRefreshView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!--        </com.hitomi.refresh.view.FunGameRefreshView>-->
     </LinearLayout>
 </LinearLayout>

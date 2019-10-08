@@ -3,5 +3,12 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="green">#00ff00</color>
+    <color name="green">#FF4CAF50</color>
+    <color name="member0">#755626</color>
+    <color name="member1">#596F23</color>
+    <color name="member2">#298175</color>
+    <color name="member3">#236B60</color>
+    <color name="member4">#175F54</color>
+    <color name="gray">@android:color/darker_gray</color>
+
 </resources>

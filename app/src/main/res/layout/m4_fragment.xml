@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -88,7 +89,7 @@
                     android:text="历史操作："
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="@+id/textView13"
-                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 <TextView
                     android:id="@+id/major_m4"
@@ -115,9 +116,11 @@
 
                 <Button
                     android:id="@+id/his_done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/underline"
                     android:text="点击查看"
+                    android:textColor="#27922C"
                     app:layout_constraintBottom_toBottomOf="@+id/textView15"
                     app:layout_constraintEnd_toEndOf="@+id/mgr_m4"
                     app:layout_constraintStart_toStartOf="@+id/mgr_m4"
@@ -186,6 +189,39 @@
                     app:layout_constraintEnd_toEndOf="@+id/QQ_m4"
                     app:layout_constraintStart_toStartOf="@+id/QQ_m4"
                     app:layout_constraintTop_toTopOf="@+id/textView20" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/ic_menu_black_24dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/msg_me_m4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/msg_me_m4"
+                    app:layout_constraintTop_toTopOf="@+id/msg_me_m4" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="上期被投诉次数："
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView13"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+                <TextView
+                    android:id="@+id/m4_last"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="   "
+                    android:textColor="#9C3E3E"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                    app:layout_constraintEnd_toEndOf="@+id/mgr_m4"
+                    app:layout_constraintStart_toStartOf="@+id/mgr_m4"
+                    app:layout_constraintTop_toTopOf="@+id/textView4" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

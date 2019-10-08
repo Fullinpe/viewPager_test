@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/m1_i_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="70dp"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/num_m3_i"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="120dp"
         android:text="17---"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/name_m3_i"
-        app:layout_constraintStart_toEndOf="@+id/name_m3_i" />
+        app:layout_constraintStart_toStartOf="@+id/name_m3_i" />
 
     <TextView
         android:id="@+id/name_m3_i"
@@ -31,34 +31,43 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.526" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/name_m3_i"
+
+    <com.sackcentury.shinebuttonlib.ShineButton
+        android:id="@+id/po_image1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="11dp"
+        android:src="@android:color/darker_gray"
+        app:allow_random_color="false"
+        app:big_shine_color="@color/colorPrimaryDark"
+        app:btn_color="@color/colorPrimaryDark"
+        app:btn_fill_color="@color/colorPrimaryDark"
+        app:click_animation_duration="200"
+        app:enable_flashing="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/name_m3_i">
+        app:layout_constraintTop_toTopOf="parent"
+        app:shine_animation_duration="1500"
+        app:shine_count="8"
+        app:shine_turn_angle="10"
+        app:siShape="@raw/like"
+        app:small_shine_color="#CC9999"
+        app:small_shine_offset_angle="20" />
 
-        <Button
-            android:id="@+id/accept_b"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="接纳"
-            android:textSize="18sp"
-            android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/num_accept"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="12"
-            android:visibility="gone" />
-    </LinearLayout>
+<!--    <ImageButton-->
+<!--        android:id="@+id/po_image1"-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginEnd="32dp"-->
+<!--        android:background="@drawable/bg_selector_thumb"-->
+<!--        android:enabled="false"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
         android:id="@+id/m3_major_name_i"
@@ -74,12 +83,13 @@
         android:id="@+id/m3_accept_num_i"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:text="0"
         android:textColor="#4CAF50"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
+        app:layout_constraintBottom_toBottomOf="@+id/po_image1"
+        app:layout_constraintEnd_toStartOf="@+id/po_image1"
+        app:layout_constraintTop_toTopOf="@+id/po_image1" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

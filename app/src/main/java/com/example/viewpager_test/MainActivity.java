@@ -22,6 +22,8 @@ import androidx.core.app.ActivityCompat;
 import com.example.viewpager_test.frag1.m1Fragment;
 import com.example.viewpager_test.frag1.m1_Adapter;
 import com.example.viewpager_test.frag2.m2Fragment;
+import com.example.viewpager_test.frag3.m3Fragment;
+import com.example.viewpager_test.frag4.m4Fragment;
 import com.example.viewpager_test.mainf.mainFragment;
 
 import java.io.File;
@@ -30,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainActivity=this;
+        mainActivity = this;
         final PackageManager pm = getPackageManager();
 
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{
@@ -175,12 +178,14 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = new Intent();
                                 intent.setClass(MainActivity.this, LogActivity.class);
                                 startActivity(intent);
+                                check_update=false;
                                 finish();
                             }
                         } else {
                             Intent intent = new Intent();
                             intent.setClass(MainActivity.this, LogActivity.class);
                             startActivity(intent);
+                            check_update=false;
                             finish();
                         }
                     } else {
@@ -202,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //TODO:更新后退回&&完成自动登录
                     if (Globals.sign_in) {
-                        String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>1 ORDER BY  members.MGR DESC",
+                        String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>0 ORDER BY  members.MGR DESC",
                                 "S_ID", "NAME", "MGR", "MAJOR", "QQ", "TEL", "TASK");
                         Globals.list = new ArrayList<>();
                         if (init_temp != null) {
@@ -224,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     ((m1Fragment) (mf.fragments[0])).count_m1.setText("当前人数：" + Globals.list.size());
-                                    m1_Adapter m1_adapter = new m1_Adapter(MainActivity.this, Globals.list);
-                                    ((m1Fragment) (mf.fragments[0])).slideRecycler.setAdapter(m1_adapter);
+                                    ((m1Fragment) (mf.fragments[0])).m1_adapter = new m1_Adapter(MainActivity.this, Globals.list);
+                                    ((m1Fragment) (mf.fragments[0])).slideRecycler.setAdapter(((m1Fragment) (mf.fragments[0])).m1_adapter);
                                 }
                             });
                         }
@@ -247,7 +252,121 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    while (!check_update) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!Globals.m2_hidden) {
+                        String[][] init_temp = DBUtils.select_DB("SELECT * FROM members WHERE MGR>2 AND COMN>0 ORDER BY COMN DESC",
+                                "NAME", "ARRIVE", "RECN", "COMN");
+                        Globals.online_m2 = new ArrayList<>();
+                        if (init_temp != null) {
+                            Map<String, Object> map = new HashMap<>();
+                            for (int i = 0; i < init_temp.length; i++) {
+                                if (i > 0)
+                                    map = new HashMap<>();
+                                map.put("name", init_temp[i][0]);
+                                map.put("arrive", init_temp[i][1]);
+                                map.put("recn", init_temp[i][2]);
+                                map.put("comn", init_temp[i][3]);
+                                Globals.online_m2.add(map);
+                            }
+                            if (((m2Fragment) (mf.fragments[1])).mViewModel.online_data != null)
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((m2Fragment) (mf.fragments[1])).mViewModel.online_data.setValue(Globals.online_m2);
+                                    }
+                                });
+                        }
+                    }
 
+                    if (!Globals.m3_hidden) {
+                        String[][] init_temp  = DBUtils.select_DB("SELECT members.S_ID,members.`NAME`,members.RECN,members.MAJOR,`logs`.S_ID SID FROM members LEFT JOIN `logs` ON `logs`.`COMMENT`=members.S_ID AND `logs`.TYPE_operation='纳新投票' AND DATE_FORMAT(OPER_time,'%Y%j')=DATE_FORMAT(CURRENT_DATE,'%Y%j') AND `logs`.S_ID='"
+                                +Globals.S_ID+"' WHERE MGR=1", "S_ID", "NAME", "RECN","MAJOR","SID");
+                        Globals.online_m3 = new ArrayList<>();
+                        if (init_temp != null) {
+                            Map<String, Object> map = new HashMap<>();
+                            for (int i = 0; i < init_temp.length; i++) {
+                                if (i > 0)
+                                    map = new HashMap<>();
+                                map.put("num", init_temp[i][0]);
+                                map.put("name", init_temp[i][1]);
+                                map.put("accept", init_temp[i][2]);
+                                map.put("major_n", init_temp[i][3]);
+                                map.put("done", init_temp[i][4]);
+                                Globals.online_m3.add(map);
+                            }
+                            if (((m3Fragment) (mf.fragments[2])).mViewModel.online_data != null)
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((m3Fragment) (mf.fragments[2])).mViewModel.online_data.setValue(Globals.online_m3);
+                                    }
+                                });
+                        }
+                    }
+                    if (!Globals.m4_hidden) {
+                        String[][] strings;
+                        strings = DBUtils.select_DB("SELECT * FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE S_ID='"
+                                + Globals.S_ID + "'", "NAME", "S_ID", "MAJOR", "mgr_name", "QQ", "TEL","LAST");
+                        final String[][] finalStrings = strings;
+
+                        if (mf.fragments!=null&&((m4Fragment) (mf.fragments[3])).tv_1 != null)
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (finalStrings != null) {
+                                        if (finalStrings.length == 1) {
+                                            ((m4Fragment) (mf.fragments[3])).tv_1.setText(finalStrings[0][0]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_2.setText(finalStrings[0][1]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_3.setText(finalStrings[0][2]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_4.setText(finalStrings[0][3]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_5.setText(finalStrings[0][4]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_6.setText(finalStrings[0][5]);
+                                            ((m4Fragment) (mf.fragments[3])).tv_7.setText(finalStrings[0][6]);
+                                        } else if (finalStrings.length > 1) {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                            builder.setTitle("提示：");
+                                            builder.setMessage("请联系管理员，账号异常");
+                                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Objects.requireNonNull(MainActivity.this).finish();
+                                                }
+                                            });
+                                            builder.show();
+                                        }
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                        builder.setTitle("提示：");
+                                        builder.setMessage("请联系管理员，账号异常");
+                                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Objects.requireNonNull(MainActivity.this).finish();
+                                            }
+                                        });
+                                        builder.show();
+                                    }
+                                }
+                            });
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
 
 //        ViewPager viewPager=findViewById(R.id.viewpager);
 //        final List<Fragment> fragmentList=new ArrayList<>();
@@ -279,7 +398,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 boolean onetime = true, onetime2 = true;
-                while (check_update) {
+                while (true) {
+                    while (!check_update) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     String[][] trash_query = null;
                     try {
                         Thread.sleep(800);
@@ -292,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
                                 "OPER_device FROM `logs` WHERE S_ID='" + Globals.S_ID
                                 + "' AND TYPE_operation='登录账户') UNION ALL SELECT PRI FROM members WHERE S_ID='" + Globals.S_ID
                                 + "' UNION ALL SELECT PRI1 FROM members WHERE S_ID='" + Globals.S_ID
+                                + "' UNION ALL SELECT MGR FROM members WHERE S_ID='" + Globals.S_ID
                                 + "'", "version_id");
                     if (trash_query != null) {
                         Globals.onlineversion_id = trash_query[0][0];
@@ -366,34 +493,28 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        if (trash_query.length > 2) {
+                        if (trash_query.length > 4) {
                             final int temp = Integer.parseInt(trash_query[2][0]);
                             handler.post(new Runnable() {
                                 @RequiresApi(api = Build.VERSION_CODES.P)
                                 @Override
                                 public void run() {
-                                    if(((m2Fragment) (mf.fragments[1])).progressBar!=null){
+                                    if (((m2Fragment) (mf.fragments[1])).progressBar != null) {
                                         ((m2Fragment) (mf.fragments[1])).progressBar.setProgress(temp);
-//                                        if (temp >= getResources().getInteger(R.integer.beg_pro)) {
-//                                            ((m2Fragment) (mf.fragments[1])).raise_tv.setVisibility(View.VISIBLE);
-//                                        } else {
-//                                            ((m2Fragment) (mf.fragments[1])).raise_tv.setVisibility(View.INVISIBLE);
-//                                        }
                                     }
                                 }
                             });
-                        }
-                        if (trash_query.length > 3) {
                             Globals.pri_able = Integer.parseInt(trash_query[3][0]) == 1;
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
 
-                                    if(((m2Fragment) (mf.fragments[1])).raise_tv != null)
+                                    if (((m2Fragment) (mf.fragments[1])).raise_tv != null)
                                         ((m2Fragment) (mf.fragments[1])).raise_tv
                                                 .setVisibility(Globals.pri_able ? View.VISIBLE : View.INVISIBLE);
                                 }
                             });
+                            Globals.MGR=Integer.parseInt(trash_query[4][0]);
                         }
                     }
                 }
@@ -405,17 +526,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Globals.maketoast(this, "destroy");
-
         super.onDestroy();
         check_update = false;
-//        finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        this.onDestroy();
+        check_update=false;
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        check_update=true;
+    }
 }

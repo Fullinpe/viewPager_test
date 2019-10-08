@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_m1"
-        android:icon="@android:drawable/ic_search_category_default"
+        android:icon="@drawable/m1_icon"
         android:title="实验室" />
 
     <item
         android:id="@+id/navigation_m2"
-        android:icon="@android:drawable/sym_contact_card"
+        android:icon="@drawable/m2_icon"
         android:title="管理" />
 
     <item
         android:id="@+id/navigation_m3"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/m3_icon"
         android:title="纳新" />
 
     <item
         android:id="@+id/navigation_m4"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/m4_icon"
         android:title="我" />
 
 </menu>

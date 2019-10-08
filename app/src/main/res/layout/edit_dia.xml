@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ABC7E0">
+
+        <EditText
+            android:id="@+id/ed4_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="@+id/ed3_dia"
+            app:layout_constraintTop_toBottomOf="@+id/ed3_dia" />
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="电话："
+            app:layout_constraintBottom_toBottomOf="@+id/ed4_dia"
+            app:layout_constraintEnd_toStartOf="@+id/ed4_dia"
+            app:layout_constraintTop_toTopOf="@+id/ed4_dia" />
+
+        <EditText
+            android:id="@+id/ed3_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="@+id/ed2_dia"
+            app:layout_constraintTop_toBottomOf="@+id/ed2_dia" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="QQ："
+            app:layout_constraintBottom_toBottomOf="@+id/ed3_dia"
+            app:layout_constraintEnd_toStartOf="@+id/ed3_dia"
+            app:layout_constraintTop_toTopOf="@+id/ed3_dia" />
+
+        <EditText
+            android:id="@+id/ed2_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="@+id/ed1_dia"
+            app:layout_constraintTop_toBottomOf="@+id/ed1_dia" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="专业："
+            app:layout_constraintBottom_toBottomOf="@+id/ed2_dia"
+            app:layout_constraintEnd_toStartOf="@+id/ed2_dia"
+            app:layout_constraintTop_toTopOf="@+id/ed2_dia" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="姓名："
+            app:layout_constraintBottom_toBottomOf="@+id/ed1_dia"
+            app:layout_constraintEnd_toStartOf="@+id/ed1_dia"
+            app:layout_constraintTop_toTopOf="@+id/ed1_dia" />
+
+        <EditText
+            android:id="@+id/ed1_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+        <Button
+            android:id="@+id/edb_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="确认修改"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ed4_dia" />
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="修改个人信息"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

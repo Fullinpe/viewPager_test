@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="70dp"
     android:descendantFocusability="blocksDescendants">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -100,11 +100,21 @@
 
         <Button
             android:id="@+id/m1_i_tel"
-            android:layout_width="80dp"
+            android:layout_width="81dp"
             android:layout_height="match_parent"
             android:background="#FF8787"
             android:gravity="center"
             android:text="TEL"
+            android:textColor="#ffffff"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/m1_i_done"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="#D52828"
+            android:gravity="center"
+            android:text="完成"
             android:textColor="#ffffff"
             android:textSize="17sp" />
     </LinearLayout>

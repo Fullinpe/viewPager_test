@@ -157,7 +157,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 status5.setVisibility(View.VISIBLE);
                             else
                                 status5.setVisibility(View.INVISIBLE);
-                            if(ed6.getText().toString().equals(ed5.getText().toString()))
+                            if(ed6.getText().toString().equals(ed5.getText().toString())&&!ed6.getText().toString().equals(""))
                                 status6.setVisibility(View.VISIBLE);
                             else
                                 status6.setVisibility(View.INVISIBLE);

@@ -20,11 +20,12 @@ import com.example.viewpager_test.SlideRecycler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
 
     private Context context;
-    private List<Map<String, Object>> list;
+    public List<Map<String, Object>> list;
 
     public m1_Adapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
@@ -55,6 +56,25 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
         holder.major.setText((String) map.get("major"));
         holder.name.setText((String) map.get("name"));
         holder.mgr.setText((String) map.get("mgr"));
+        switch (((String) Objects.requireNonNull(map.get("mgr")))){
+            case "新人":
+                holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member0));
+                break;
+            case "退休":
+                holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member1));
+                break;
+            case "队员":
+                holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member2));
+                break;
+            case "结构组长":
+            case "硬件组长":
+            case "软件组长":
+                holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member3));
+                break;
+            case "管理员":
+                holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member4));
+                break;
+        }
         holder.qq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +168,7 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
 //
 //    @Override
 //    public View getView(int i, View view, ViewGroup viewGroup) {
-//        @SuppressLint({"ViewHolder", "InflateParams"}) View view1=inflater.inflate(R.layout.m1_item,null);
+//        @SuppressLint({"ViewHolder", "InflateParams"}) View view1=inflater.inflate(R.task_edit.m1_item,null);
 //
 //        TextView major=view1.findViewById(R.id.major_m1_i);
 //        TextView name=view1.findViewById(R.id.name_m1_i);

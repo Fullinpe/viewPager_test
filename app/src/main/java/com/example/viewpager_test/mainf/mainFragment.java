@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.viewpager_test.Globals;
 import com.example.viewpager_test.R;
 import com.example.viewpager_test.frag1.m1Fragment;
 import com.example.viewpager_test.frag2.m2Fragment;
@@ -48,6 +49,7 @@ public class mainFragment extends Fragment {
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Globals.current_frag=item.getItemId();
             switch (item.getItemId()) {
                 case R.id.navigation_m1:
                     if (lastfragment != 0) {

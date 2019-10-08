@@ -103,7 +103,7 @@ public class pickerDialog extends Dialog {
             });
             pickerdialog.setContentView(mLayout);
             pickerdialog.setCancelable(true);
-            pickerdialog.setCanceledOnTouchOutside(false);
+            pickerdialog.setCanceledOnTouchOutside(true);
             return pickerdialog;
         }
         public Builder setonCancel(final Runnable runnable){

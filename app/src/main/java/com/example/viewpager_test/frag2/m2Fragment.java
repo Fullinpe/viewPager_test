@@ -199,12 +199,6 @@ public class m2Fragment extends Fragment {
                                                         complaint.setClickable(true);
                                                     }
                                                 })
-                                                .setNone("放弃投诉", new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Globals.maketoast(getActivity(), "取消投诉成功");
-                                                    }
-                                                })
                                                 .show();
                                     }
                                 });

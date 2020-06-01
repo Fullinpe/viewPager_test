@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="说明：暂无说明。。。"
+                android:text="说明：本期任务显示 绿色 为经管理员核验已完成，显示 红色 为未完成"
                 android:textColor="#A70202"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"

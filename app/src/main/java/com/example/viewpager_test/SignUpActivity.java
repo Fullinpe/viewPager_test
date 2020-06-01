@@ -55,7 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
                 boolean onetime=true;
                 while (check_update){
                     String[][] trash_query;
-                    trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version","version_id");
+                    trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version WHERE platform='Android'","version_id");
                     if(trash_query!=null) {
                         Globals.onlineversion_id = trash_query[0][0];
                         if (!Globals.onlineversion_id.equals(Globals.version_id)&&onetime) {
@@ -187,7 +187,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if(global)
                         {
                             temp_log=ed1.getText().toString();
-                            status = DBUtils._DB("INSERT INTO members (MGR,S_ID,`NAME`,QQ,TEL,MAJOR) VALUES ('0','"
+                            status = DBUtils._DB("INSERT INTO members (MGR,S_ID,`NAME`,QQ,TEL,MAJOR) VALUES ('1','"
                                     +ed2.getText().toString() +"','"
                                     +ed1.getText().toString() +"','"
                                     +ed3.getText().toString()+"','"

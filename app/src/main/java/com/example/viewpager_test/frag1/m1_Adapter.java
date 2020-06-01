@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.viewpager_test.DBUtils;
 import com.example.viewpager_test.Globals;
 import com.example.viewpager_test.R;
 import com.example.viewpager_test.SlideRecycler;
@@ -26,6 +28,8 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
 
     private Context context;
     public List<Map<String, Object>> list;
+    private Handler handler=new Handler();
+    boolean lock_done=true;
 
     public m1_Adapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
@@ -38,7 +42,10 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.m1_item, parent, false);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.width = SlideRecycler.getScreenWidth() + SlideRecycler.dp2px(160);
+        if(Globals.MGR==7)
+            layoutParams.width = SlideRecycler.getScreenWidth() + SlideRecycler.dp2px(240);
+        else
+            layoutParams.width = SlideRecycler.getScreenWidth() + SlideRecycler.dp2px(160);
         view.setLayoutParams(layoutParams);
 
         View main = view.findViewById(R.id.m1_i_main);
@@ -49,13 +56,23 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InnerHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final InnerHolder holder, final int position) {
 
         final Map<String, Object> map = list.get(position);
+        final int temp_status=Integer.parseInt((String) Objects.requireNonNull(map.get("done")));
         holder.task.setText((String) map.get("task"));
         holder.major.setText((String) map.get("major"));
         holder.name.setText((String) map.get("name"));
         holder.mgr.setText((String) map.get("mgr"));
+        if(temp_status==0){
+            holder.task.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.done.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            holder.done.setText("完成");
+        }else{
+            holder.task.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            holder.done.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+            holder.done.setText("未完成");
+        }
         switch (((String) Objects.requireNonNull(map.get("mgr")))){
             case "新人":
                 holder.mgr.setBackgroundColor(context.getResources().getColor(R.color.member0));
@@ -102,6 +119,47 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
                 }
             }
         });
+        holder.done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lock_done&&Globals.MGR==7){
+                    lock_done=false;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int rows=DBUtils._DB("UPDATE members SET DONE="+(temp_status==0?1:0)+" WHERE S_ID='"+map.get("sid")+"'");
+                            if(rows==1)
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Globals.maketoast(context,"更改状态 成功");
+                                        Globals.logs_thread(Globals.S_ID,"管理操作","设置DONE状态="+(temp_status==0?1:0));
+                                        lock_done=true;
+                                        if(holder.done.getText().toString().equals("未完成")){
+                                            holder.task.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                                            holder.done.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                                            holder.done.setText("完成");
+                                        }else{
+                                            holder.task.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                                            holder.done.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                                            holder.done.setText("未完成");
+                                        }
+                                    }
+                                });
+                            else
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Globals.maketoast(context,"更改状态 失败");
+                                        lock_done=true;
+                                    }
+                                });
+
+                        }
+                    }).start();
+                }
+            }
+        });
     }
 
 
@@ -112,7 +170,7 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
 
     public class InnerHolder extends RecyclerView.ViewHolder {
         TextView major, name, mgr, task;
-        Button qq, tel;
+        Button qq, tel,done;
 
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
@@ -122,63 +180,7 @@ public class m1_Adapter extends RecyclerView.Adapter<m1_Adapter.InnerHolder> {
             mgr = itemView.findViewById(R.id.mgr_m1_i);
             qq = itemView.findViewById(R.id.m1_i_qq);
             tel = itemView.findViewById(R.id.m1_i_tel);
+            done = itemView.findViewById(R.id.m1_i_done);
         }
     }
 }
-
-//package com.example.viewpager_test.frag1;
-//
-//import android.annotation.SuppressLint;
-//import android.content.Context;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.BaseAdapter;
-//import android.widget.TextView;
-//
-//import com.example.viewpager_test.Globals;
-//import com.example.viewpager_test.R;
-//
-//import java.util.List;
-//import java.util.Map;
-//
-//public class m1_Adapter extends BaseAdapter {
-//
-//    List<Map<String,Object>> list;
-//    private LayoutInflater inflater;
-//    public m1_Adapter(Context context,List<Map<String, Object>> list) {
-//        this.inflater = LayoutInflater.from(context);
-//        this.list = list;
-//    }
-//
-//    @Override
-//    public int getCount() {
-//        return list.size();
-//    }
-//
-//    @Override
-//    public Object getItem(int i) {
-//        return list.get(i);
-//    }
-//
-//    @Override
-//    public long getItemId(int i) {
-//        return i;
-//    }
-//
-//    @Override
-//    public View getView(int i, View view, ViewGroup viewGroup) {
-//        @SuppressLint({"ViewHolder", "InflateParams"}) View view1=inflater.inflate(R.task_edit.m1_item,null);
-//
-//        TextView major=view1.findViewById(R.id.major_m1_i);
-//        TextView name=view1.findViewById(R.id.name_m1_i);
-//        TextView mgr=view1.findViewById(R.id.job_m1_i);
-//
-//        Map<String,Object> map= Globals.list.get(i);
-//        major.setText((String) map.get("major"));
-//        name.setText((String) map.get("name"));
-//        mgr.setText((String) map.get("mgr"));
-//
-//        return view1;
-//    }
-//}

@@ -116,14 +116,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 String[][] temp;
-                temp = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version", "version_id");
+                temp = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version WHERE platform='Android'", "version_id");
                 InputStream[] is;
                 if (temp != null) {
                     Globals.onlineversion_id = temp[0][0];
                     if (!Globals.onlineversion_id.equals(Globals.version_id)) {
                         int version_len =
                                 Integer.parseInt(DBUtils.select_DB("SELECT OCTET_LENGTH(version_blob) datesize from version " +
-                                        "WHERE version_id=(SELECT MAX(version_id) FROM version)", "datesize")[0][0]);
+                                        "WHERE version_id=(SELECT MAX(version_id) FROM version WHERE platform='Android') AND platform='Android'", "datesize")[0][0]);
 
                         File dir = new File(Globals.mSavePath);
                         if (!dir.exists()) {
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                         } else
                             Log.e("LogActivity", "文件夹已存在");
 
-                        is = DBUtils.selectBLOB("SELECT * from version WHERE version_id=" + temp[0][0], "version_blob");
+                        is = DBUtils.selectBLOB("SELECT * from version WHERE platform='Android' AND version_id=" + temp[0][0], "version_blob");
 
                         try {
                             apkFile = new File(Globals.mSavePath, Globals.mVersion_name);
@@ -207,10 +207,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //TODO:更新后退回&&完成自动登录
                     if (Globals.sign_in) {
-                        String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>0 ORDER BY  members.MGR DESC",
-                                "S_ID", "NAME", "MGR", "MAJOR", "QQ", "TEL", "TASK");
+                        String[][] init_temp = DBUtils.select_DB("SELECT S_ID,`NAME`,mgr_name MGR,MAJOR,QQ,TEL,TASK,DONE FROM members LEFT JOIN mgr_table ON members.MGR=mgr_table.mgr_id WHERE MGR>0 ORDER BY  members.MGR DESC",
+                                "S_ID", "NAME", "MGR", "MAJOR", "QQ", "TEL", "TASK","DONE");
                         Globals.list = new ArrayList<>();
                         if (init_temp != null) {
+                            Globals.members=0;
+                            Globals.newers=0;
                             Map<String, Object> map = new HashMap<>();
                             for (int i = 0; i < init_temp.length; i++) {
                                 if (i > 0)
@@ -222,7 +224,12 @@ public class MainActivity extends AppCompatActivity {
                                 map.put("qq", init_temp[i][4]);
                                 map.put("tel", init_temp[i][5]);
                                 map.put("task", init_temp[i][6]);
+                                map.put("done", init_temp[i][7]);
                                 Globals.list.add(map);
+                                if(!init_temp[i][2].equals("新人")&&!init_temp[i][2].equals("退休"))
+                                    Globals.members++;
+                                else if(init_temp[i][2].equals("新人"))
+                                    Globals.newers++;
                             }
                             handler.post(new Runnable() {
                                 @SuppressLint("SetTextI18n")
@@ -231,11 +238,12 @@ public class MainActivity extends AppCompatActivity {
                                     ((m1Fragment) (mf.fragments[0])).count_m1.setText("当前人数：" + Globals.list.size());
                                     ((m1Fragment) (mf.fragments[0])).m1_adapter = new m1_Adapter(MainActivity.this, Globals.list);
                                     ((m1Fragment) (mf.fragments[0])).slideRecycler.setAdapter(((m1Fragment) (mf.fragments[0])).m1_adapter);
+                                    ((m1Fragment) (mf.fragments[0])).count_m2.setText("新人："+Globals.newers);
+                                    ((m1Fragment) (mf.fragments[0])).count_m3.setText("正式队员："+Globals.members);
                                 }
                             });
                         }
                     }
-
                 } else {
                     //当前网络链路错误
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
@@ -413,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     if (Globals.S_ID != null)
-                        trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version UNION ALL " +
+                        trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version WHERE platform='Android' UNION ALL " +
                                 "SELECT OPER_device FROM `logs` WHERE `KEY`=(SELECT MAX(`KEY`) " +
                                 "OPER_device FROM `logs` WHERE S_ID='" + Globals.S_ID
                                 + "' AND TYPE_operation='登录账户') UNION ALL SELECT PRI FROM members WHERE S_ID='" + Globals.S_ID
@@ -450,8 +458,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //TODO:cha
-                        for (String[] strings : trash_query)
-                            Log.e("TG", "" + strings[0]);
+//                        for (String[] strings : trash_query)
+//                            Log.e("TG", "" + strings[0]);
 
                         if (trash_query.length > 1 && !trash_query[1][0].equals(Globals.device_mac) && onetime2) {
                             onetime2 = false;

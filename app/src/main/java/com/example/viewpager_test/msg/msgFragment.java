@@ -27,7 +27,7 @@ public class msgFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.msg_fragment, container, false);
         slideRecycler=view.findViewById(R.id.slideR);
-        slideRecycler.setTopview(40-20);
+        slideRecycler.setTopview(0);
         return view;
     }
 

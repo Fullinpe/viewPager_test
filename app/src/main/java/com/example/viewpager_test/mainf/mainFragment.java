@@ -65,8 +65,10 @@ public class mainFragment extends Fragment {
                     return true;
                 case R.id.navigation_m3:
                     if (lastfragment != 2) {
-                        switchFragment(lastfragment, 2);
-                        lastfragment = 2;
+                        if(Globals.MGR>=1){
+                            switchFragment(lastfragment, 2);
+                            lastfragment = 2;
+                        }
                     }
                     return true;
                 case R.id.navigation_m4:

@@ -36,6 +36,7 @@ public class pickerDialog extends Dialog {
         String title = "你已选择";
         Context context;
         picker_Adapter picker_adapter;
+        int num=0;
 
         public Builder(Context context, List<Map<String,Object>> list) {
             this.context = context;
@@ -59,6 +60,7 @@ public class pickerDialog extends Dialog {
                 @Override
                 public void setTitles(int picks) {
                     textView.setText(title + picks + "人");
+                    num=picks;
                 }
             };
             RecyclerView.LayoutManager manager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -81,6 +83,7 @@ public class pickerDialog extends Dialog {
             return this;
         }
         public Builder setNone(String string,Runnable runnable) {
+            none_b.setVisibility(View.VISIBLE);
             none_b.setText(string);
             none_R=runnable;
             return this;
@@ -90,15 +93,34 @@ public class pickerDialog extends Dialog {
             ok_b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    pickerdialog.dismiss();
-                    ok_R.run();
+                    if(num==0)
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Globals.maketoast(context,"请选择至少一个对象");
+                            }
+                        });
+                    else {
+                        pickerdialog.dismiss();
+                        ok_R.run();
+                    }
                 }
             });
             none_b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    pickerdialog.dismiss();
-                    none_R.run();
+                    if(num==0)
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Globals.maketoast(context,"你没有选择任何对象");
+                            }
+                        });
+                    else {
+                        pickerdialog.dismiss();
+                        none_R.run();
+                    }
+
                 }
             });
             pickerdialog.setContentView(mLayout);

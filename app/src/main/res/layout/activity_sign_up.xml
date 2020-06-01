@@ -283,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:ems="10"
-                    android:hint="输入你的专业"
+                    android:hint="例如：17自动化"
                     android:inputType="textPersonName"
                     android:maxLength="10"
                     app:layout_constraintEnd_toEndOf="@+id/ed2_signup"

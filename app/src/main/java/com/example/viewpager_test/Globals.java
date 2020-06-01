@@ -23,7 +23,7 @@ public class Globals {
     public static int current_frag=0;
     public static String S_ID = "";
     public static String onlineversion_id="";
-    public static String version_id="3";
+    public static String version_id="8";
     public static String device_mac="";
     public static String mSavePath = Environment.getExternalStorageDirectory() + "/" + "LOTogether";
     public static String mVersion_name = "temp.apk";
@@ -37,6 +37,8 @@ public class Globals {
     public static boolean m2_hidden=true;
     public static boolean m3_hidden=true;
     public static boolean m4_hidden=true;
+    public static int members=0;
+    public static int newers=0;
 
     public static void maketoast(Context context, String msg) {
         Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);

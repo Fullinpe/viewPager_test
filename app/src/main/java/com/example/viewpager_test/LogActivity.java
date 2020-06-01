@@ -110,7 +110,7 @@ public class LogActivity extends AppCompatActivity {
                 boolean onetime = true;
                 while (check_update) {
                     String[][] trash_query;
-                    trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version", "version_id");
+                    trash_query = DBUtils.select_DB("SELECT MAX(version_id) version_id FROM version WHERE platform='Android'", "version_id");
                     if (trash_query != null) {
                         Globals.onlineversion_id = trash_query[0][0];
                         if (!Globals.onlineversion_id.equals(Globals.version_id) && onetime) {

@@ -128,6 +128,7 @@ public class SlideRecycler extends RecyclerView {
          * 只记录按下之后的坐标
          */
         Log.e("TAG_slide",add+"");
+        //TODO
         if (add==-1)
             noEx=true;
         else
@@ -143,7 +144,6 @@ public class SlideRecycler extends RecyclerView {
          * 移动事件
          */
         else if (e.getAction() == MotionEvent.ACTION_MOVE) {
-            //TODO
             int movex = (int) (e.getX() - startx);
             int movey = (int) (e.getY() - starty);
 
